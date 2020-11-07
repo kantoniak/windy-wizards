@@ -82,7 +82,7 @@ try:
 			sec = timer - min
 			min_str = '{:02d}'.format(min)
 			sec_str = '{:05.2f}'.format(sec).replace(".", ":")
-			alert = timer > alert_time
+			alert = timer > alert_time and opened
 			
 			if connected:
 				lines = [
