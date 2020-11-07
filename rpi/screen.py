@@ -107,9 +107,9 @@ try:
 					"CLOSE WINDOW!" if alert else ""
 				]
 
-				if open_msg:
+				if open_msg and opened:
 					lines[5] = "Turn off the heater!"
-				if close_msg:
+				if close_msg and not opened:
 					lines[4] = "Turn on the heater!"
 			else:
 				lines = [
