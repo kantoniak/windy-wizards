@@ -48,7 +48,7 @@ else:
 
 device = sh1106(serial) #sh1106  
 
-try:
+# try:
 	receiver = FakeReceiver(17, 23)
 	opened = False
 	open_time = 0
@@ -84,6 +84,6 @@ try:
 				draw.text((x, y), line, font=font, fill=255)
 				y += step
 
-except:
-	print("except")
+# except Error:
+# 	print("except")
 GPIO.cleanup()
