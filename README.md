@@ -9,6 +9,11 @@ System parts are:
 ## Main computer
 Main computer oversees all the sensors around the house. It is a Raspberry Pi device with a screen and radio receiver for 433 MHz. Device displays state of sensors and reminds you to let some fresh air in.
 
+Main computer with mocked-up radio receiver:
+<p align="center">
+    <img src="readme/rpi.jpg" width="800" />
+</p>
+
 ## Window sensors
 Window sensor is a simple device with unique ID which communicates window has been opened/closed. It also sends alive message to keep system informed about device state. Device is powered from battery, and sends updates over 433 MHz radio frequency.
 
