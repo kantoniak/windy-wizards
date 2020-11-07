@@ -93,7 +93,7 @@ try:
 					# f'Humidity: {hum}%',
 					f'Timer: {min_str}:{sec_str}' if opened else "",
 					"",
-					"CLOSE WINDOW!"
+					"CLOSE WINDOW!" if alert else ""
 				]
 			else:
 				lines = [
