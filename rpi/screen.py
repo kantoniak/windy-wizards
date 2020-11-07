@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 
 import time
 import subprocess
+import fake_receiver
 
 from PIL import Image
 from PIL import ImageDraw
@@ -45,21 +46,36 @@ if  USER_I2C == 1:
 else:
 	serial = spi(device=0, port=0, bus_speed_hz = 8000000, transfer_size = 4096, gpio_DC = 24, gpio_RST = 25)
 
-device = sh1106(serial, rotate=2) #sh1106  
+device = sh1106(serial) #sh1106  
 
 try:
+	receiver = FakeReceiver(17, 23)
+	opened = False
+	open_time = 0
+
 	while True:
 		with canvas(device) as draw:
 			
-			opened = True
-			temp = -40.4
-			hum = 40.1
+			status = receiver.getMessage()
+			if status.type == MessageType.WINDOW_OPEN and status.payload != opened:
+				opened = status.payload
+				if opened:
+					open_time = time.time()
+
+			# temp = -40.4
+			# hum = 40.1
+
+			timer = time.time() - open_time
+			min = int(timer/60)
+			sec = timer - min
+			sec_str = '{:,.2f}'.format(sec).replace(".", ":")
 
 			lines = [
 				f'Hello, there!',
 				f'Windows is: {"OPENED" if opened else "CLOSED"}',
-				f'Temperature: {temp}ºC',
-				f'Humidity: {hum}%',
+				# f'Temperature: {temp}ºC',
+				# f'Humidity: {hum}%',
+				f'Windows is opened for: {min}:{sec_str}' if opened else ""
 			]
 
 			y = top
