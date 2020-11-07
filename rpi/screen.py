@@ -75,7 +75,7 @@ while True:
 			f'Windows is: {"OPENED" if opened else "CLOSED"}',
 			# f'Temperature: {temp}ºC',
 			# f'Humidity: {hum}%',
-			f'Windows is opened for: {min}:{sec_str}' if opened else ""
+			f'Timer: {min}:{sec_str}' if opened else ""
 		]
 
 		y = top
