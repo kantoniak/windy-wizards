@@ -16,7 +16,7 @@ class FakeMessage:
 class FakeReceiver:
     def __init__(self, powerPin, pin):
         self.id = 404
-        self.aliveInterval = 10
+        self.aliveInterval = 5
         self.lastAlive = 0
         self.pressed = False
 

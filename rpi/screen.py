@@ -53,7 +53,7 @@ try:
 	opened = False
 	open_time = 0
 	connected = True
-	alive_interval = 5
+	alive_interval = 10
 	last_alive = time.time()
 	alert_time = 30
 
