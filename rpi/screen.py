@@ -53,8 +53,9 @@ try:
 	opened = False
 	open_time = 0
 	connected = True
-	alive_interval = 30
+	alive_interval = 5
 	last_alive = time.time()
+	alert_time = 30
 
 	while True:
 		with canvas(device) as draw:
@@ -81,6 +82,7 @@ try:
 			sec = timer - min
 			min_str = '{:02d}'.format(min)
 			sec_str = '{:05.2f}'.format(sec).replace(".", ":")
+			alert = timer > alert_time
 			
 			if connected:
 				lines = [
@@ -89,13 +91,15 @@ try:
 					f'Windows is: {"OPENED" if opened else "CLOSED"}',
 					# f'Temperature: {temp}ºC',
 					# f'Humidity: {hum}%',
-					f'Timer: {min_str}:{sec_str}' if opened else ""
+					f'Timer: {min_str}:{sec_str}' if opened else "",
+					"",
+					"CLOSE WINDOW!"
 				]
 			else:
 				lines = [
 					"",
 					"",
-					"      Sensor DISCONNECTED!"
+					"   Sensor DISCONNECTED!"
 				]
 
 			y = top
