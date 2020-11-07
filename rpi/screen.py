@@ -9,7 +9,7 @@ import RPi.GPIO as GPIO
 
 import time
 import subprocess
-import fake_receiver
+from fake_receiver import MessageType, FakeMessage, FakeReceiver
 
 from PIL import Image
 from PIL import ImageDraw
@@ -57,7 +57,7 @@ while True:
 	with canvas(device) as draw:
 		
 		status = receiver.getMessage()
-		if status.type == MessageType.WINDOW_OPEN and status.payload != opened:
+		if status != None and status.type == MessageType.WINDOW_OPEN and status.payload != opened:
 			opened = status.payload
 			if opened:
 				open_time = time.time()
