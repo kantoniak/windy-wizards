@@ -18,6 +18,7 @@ class FakeReceiver:
         self.id = 404
         self.aliveInterval = 10
         self.lastAlive = 0
+        self.pressed = False
 
         self.powerPin = powerPin
         self.pin = pin
@@ -41,9 +42,12 @@ class FakeReceiver:
         if GPIO.input(self.powerPin) == GPIO.LOW:
             return None
 
-        if GPIO.input(self.pin) == GPIO.HIGH:
+        if not self.pressed and GPIO.input(self.pin) == GPIO.HIGH:
             self.isOpened = not self.isOpened
+            self.pressed = True
             return self.__sendMessage(MessageType.WINDOW_OPEN)
+        elif GPIO.input(self.pin) == GPIO.LOW:
+            self.pressed = False
 
         now = time.time()
         if now - self.lastAlive > self.aliveInterval:
