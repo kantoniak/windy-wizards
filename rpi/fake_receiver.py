@@ -40,11 +40,13 @@ class FakeReceiver:
     def getMessage(self):
         #device is turned off
         if GPIO.input(self.powerPin) == GPIO.LOW:
+            print("no power")
             return None
 
         if not self.pressed and GPIO.input(self.pin) == GPIO.HIGH:
             self.isOpened = not self.isOpened
             self.pressed = True
+            print(f'window opened: {self.isOpened}')
             return self.__sendMessage(MessageType.WINDOW_OPEN)
         elif GPIO.input(self.pin) == GPIO.LOW:
             self.pressed = False
@@ -52,4 +54,5 @@ class FakeReceiver:
         now = time.time()
         if now - self.lastAlive > self.aliveInterval:
             self.lastAlive = now
+            print("alive")
             return self.__sendMessage(MessageType.ALIVE)
