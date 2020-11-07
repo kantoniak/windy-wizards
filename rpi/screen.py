@@ -52,39 +52,58 @@ try:
 	receiver = FakeReceiver(17, 23)
 	opened = False
 	open_time = 0
-	
+	connected = True
+	alive_interval = 30
+	last_alive = time.time()
+
 	while True:
 		with canvas(device) as draw:
-			
+
 			status = receiver.getMessage()
-			if status != None and status.type == MessageType.WINDOW_OPEN and status.payload != opened:
-				opened = status.payload
-				if opened:
-					open_time = time.time()
-	
+			if status != None:
+				if status.type == MessageType.WINDOW_OPEN and status.payload != opened:
+					opened = status.payload
+					if opened:
+						open_time = time.time()
+				elif status.type == MessageType.ALIVE:
+					last_alive = time.time()
+					connected = True
+
+			if time.time() - last_alive > alive_interval:
+				connected = False
+			
+
 			# temp = -40.4
 			# hum = 40.1
-	
+
 			timer = time.time() - open_time
 			min = int(timer/60)
 			sec = timer - min
 			min_str = '{:02d}'.format(min)
 			sec_str = '{:05.2f}'.format(sec).replace(".", ":")
-	
-			lines = [
-				f'Hello, there!',
-				f'Windows is: {"OPENED" if opened else "CLOSED"}',
-				# f'Temperature: {temp}ºC',
-				# f'Humidity: {hum}%',
-				f'Timer: {min_str}:{sec_str}' if opened else ""
-			]
-	
+			
+			if connected:
+				lines = [
+					f'Sensor connected',
+					"",
+					f'Windows is: {"OPENED" if opened else "CLOSED"}',
+					# f'Temperature: {temp}ºC',
+					# f'Humidity: {hum}%',
+					f'Timer: {min_str}:{sec_str}' if opened else ""
+				]
+			else:
+				lines = [
+					"",
+					"",
+					"      Sensor DISCONNECTED!"
+				]
+
 			y = top
 			step = 8
 			for line in lines:
 				draw.text((x, y), line, font=font, fill=255)
 				y += step
 
-except Error:
+except:
 	print("except")
 GPIO.cleanup()
