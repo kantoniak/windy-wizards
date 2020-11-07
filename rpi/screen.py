@@ -49,40 +49,40 @@ else:
 device = sh1106(serial) #sh1106  
 
 # try:
-	receiver = FakeReceiver(17, 23)
-	opened = False
-	open_time = 0
+receiver = FakeReceiver(17, 23)
+opened = False
+open_time = 0
 
-	while True:
-		with canvas(device) as draw:
-			
-			status = receiver.getMessage()
-			if status.type == MessageType.WINDOW_OPEN and status.payload != opened:
-				opened = status.payload
-				if opened:
-					open_time = time.time()
+while True:
+	with canvas(device) as draw:
+		
+		status = receiver.getMessage()
+		if status.type == MessageType.WINDOW_OPEN and status.payload != opened:
+			opened = status.payload
+			if opened:
+				open_time = time.time()
 
-			# temp = -40.4
-			# hum = 40.1
+		# temp = -40.4
+		# hum = 40.1
 
-			timer = time.time() - open_time
-			min = int(timer/60)
-			sec = timer - min
-			sec_str = '{:,.2f}'.format(sec).replace(".", ":")
+		timer = time.time() - open_time
+		min = int(timer/60)
+		sec = timer - min
+		sec_str = '{:,.2f}'.format(sec).replace(".", ":")
 
-			lines = [
-				f'Hello, there!',
-				f'Windows is: {"OPENED" if opened else "CLOSED"}',
-				# f'Temperature: {temp}ºC',
-				# f'Humidity: {hum}%',
-				f'Windows is opened for: {min}:{sec_str}' if opened else ""
-			]
+		lines = [
+			f'Hello, there!',
+			f'Windows is: {"OPENED" if opened else "CLOSED"}',
+			# f'Temperature: {temp}ºC',
+			# f'Humidity: {hum}%',
+			f'Windows is opened for: {min}:{sec_str}' if opened else ""
+		]
 
-			y = top
-			step = 8
-			for line in lines:
-				draw.text((x, y), line, font=font, fill=255)
-				y += step
+		y = top
+		step = 8
+		for line in lines:
+			draw.text((x, y), line, font=font, fill=255)
+			y += step
 
 # except Error:
 # 	print("except")
