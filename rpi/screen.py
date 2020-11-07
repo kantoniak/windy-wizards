@@ -68,14 +68,15 @@ while True:
 		timer = time.time() - open_time
 		min = int(timer/60)
 		sec = timer - min
-		sec_str = '{:,.2f}'.format(sec).replace(".", ":")
+		min_str = '{:02d}'.format(min)
+		sec_str = '{:05.2f}'.format(sec).replace(".", ":")
 
 		lines = [
 			f'Hello, there!',
 			f'Windows is: {"OPENED" if opened else "CLOSED"}',
 			# f'Temperature: {temp}ºC',
 			# f'Humidity: {hum}%',
-			f'Timer: {min}:{sec_str}' if opened else ""
+			f'Timer: {min_str}:{sec_str}' if opened else ""
 		]
 
 		y = top
