@@ -2,7 +2,10 @@
 #define LED_PIN 1
 #define DEBUG_PIN 0
 #define SWITCH_PIN 2
+
 #define DEVICE_ID 0x8C
+
+#define _DEBUG
 
 #include <RCSwitch.h>
 #include "comms.h"
@@ -17,12 +20,17 @@ struct WindowState {
 
 void on_switch() {
   window_state.change_flag = true;
-  digitalWrite(DEBUG_PIN, HIGH);
+#ifdef _DEBUG
+  digitalWrite(DEBUG_PIN, !digitalRead(DEBUG_PIN));
+#endif
 }
 
 void handle_window_changed(WindowState* window) {
   window->change_flag = false;
-  digitalWrite(DEBUG_PIN, LOW);
+#ifdef _DEBUG
+  digitalWrite(DEBUG_PIN, !digitalRead(DEBUG_PIN));
+#endif
+
   window->open = digitalRead(SWITCH_PIN);
   send_window_open(window);
 }
@@ -36,24 +44,29 @@ void send_window_open(WindowState* window) {
 }
 
 void setup() {
-  pinMode(LED_PIN, OUTPUT);
+#ifdef _DEBUG
   pinMode(DEBUG_PIN, OUTPUT);
+#endif
+
+  pinMode(LED_PIN, OUTPUT);
   pinMode(SWITCH_PIN, INPUT_PULLUP);
   digitalWrite(DEBUG_PIN, HIGH);
 
   attachInterrupt(/* P2 */ 0, on_switch, CHANGE);
 
   transmitter.enableTransmit(TRANSMIT_PIN);
+
+  // First run message
+  window_state.open = digitalRead(SWITCH_PIN);
+  send_window_open(&window_state);
+  window_state.initialized = true;
 }
 
 void loop() {
-  if (!window_state.initialized) {
-    window_state.open = digitalRead(SWITCH_PIN);
-    send_window_open(&window_state);
-    window_state.initialized = true;
-  }
-
   if (window_state.change_flag) {
     handle_window_changed(&window_state);
   }
+
+  comms_heartbeat(&transmitter, DEVICE_ID);
+  delay(500);
 }

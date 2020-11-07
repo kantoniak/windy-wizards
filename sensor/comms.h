@@ -1,8 +1,12 @@
 #include <RCSwitch.h>
 
+#define ALIVE_INTERVAL_MS 10000
+
+unsigned long last_message_timestamp = 0;
+
 enum MessageType : uint8_t {
   UNKNOWN = 0,
-  PING = 1,
+  ALIVE = 1,
   WINDOW_OPEN = 2
 };
 
@@ -19,6 +23,8 @@ struct Message {
 };
 
 void send_message(RCSwitch* transmitter, Message* message) {
+  last_message_timestamp = millis();
+
   unsigned long int buffer = 0;
   buffer += (message->device_id << 8);
   buffer += (message->type << 4) & 0b11110000;
@@ -27,5 +33,20 @@ void send_message(RCSwitch* transmitter, Message* message) {
   digitalWrite(LED_PIN, HIGH);
   transmitter->send(buffer, 16);
   digitalWrite(LED_PIN, LOW);
-  delay(200);
+}
+
+void comms_heartbeat(RCSwitch* transmitter, uint8_t device_id) {
+#ifdef _DEBUG
+  digitalWrite(DEBUG_PIN, !digitalRead(DEBUG_PIN));
+#endif
+
+  if (millis() - last_message_timestamp <= ALIVE_INTERVAL_MS) {
+    return;
+  }
+
+  Message message;
+  message.device_id = device_id;
+  message.type = ALIVE;
+  message.payload = true;
+  send_message(transmitter, &message);
 }
