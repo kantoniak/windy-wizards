@@ -55,7 +55,9 @@ try:
 	connected = True
 	alive_interval = 10
 	last_alive = time.time()
-	alert_time = 30
+	alert_time = 15
+	open_interval = 30
+	last_closed = time.time()
 
 	while True:
 		with canvas(device) as draw:
@@ -66,6 +68,8 @@ try:
 					opened = status.payload
 					if opened:
 						open_time = time.time()
+					else:
+						last_closed = time.time()
 				elif status.type == MessageType.ALIVE:
 					last_alive = time.time()
 					connected = True
@@ -78,11 +82,13 @@ try:
 			# hum = 40.1
 
 			timer = time.time() - open_time
+			open_timer = time.time() - last_closed
 			min = int(timer/60)
-			sec = timer - min
+			sec = timer - min * 60
 			min_str = '{:02d}'.format(min)
 			sec_str = '{:05.2f}'.format(sec).replace(".", ":")
 			alert = timer > alert_time and opened
+			open_alert = not opened and open_timer > open_interval
 			
 			if connected:
 				lines = [
@@ -92,14 +98,14 @@ try:
 					# f'Temperature: {temp}ºC',
 					# f'Humidity: {hum}%',
 					f'Timer: {min_str}:{sec_str}' if opened else "",
-					"",
+					"OPEN WINDOW!" if open_alert else "",
 					"CLOSE WINDOW!" if alert else ""
 				]
 			else:
 				lines = [
 					"",
 					"",
-					"   Sensor DISCONNECTED!"
+					" Sensor DISCONNECTED!"
 				]
 
 			y = top
