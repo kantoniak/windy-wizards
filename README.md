@@ -11,3 +11,13 @@ Main computer oversees all the sensors around the house. It is a Raspberry Pi de
 
 ## Window sensors
 Window sensor is a simple device with unique ID which communicates window has been opened/closed. It also sends alive message to keep system informed about device state. Device is powered from battery, and sends updates over 433 MHz radio frequency.
+
+Device on prototyping board:
+<p align="center">
+    <img src="readme/sensor.jpg" width="800" />
+</p>
+
+Schematic:
+<p align="center">
+    <img src="readme/sensor-schematic.svg" width="800" />
+</p>
