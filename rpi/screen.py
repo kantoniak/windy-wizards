@@ -59,6 +59,8 @@ try:
 	open_interval = 30
 	last_closed = time.time()
 
+	msg_time = 5
+
 	while True:
 		with canvas(device) as draw:
 
@@ -89,6 +91,9 @@ try:
 			sec_str = '{:05.2f}'.format(sec).replace(".", ":")
 			alert = timer > alert_time and opened
 			open_alert = not opened and open_timer > open_interval
+
+			open_msg = timer < msg_time
+			close_msg = open_timer < msg_time
 			
 			if connected:
 				lines = [
@@ -101,6 +106,11 @@ try:
 					"OPEN WINDOW!" if open_alert else "",
 					"CLOSE WINDOW!" if alert else ""
 				]
+
+				if open_msg:
+					lines[5] = "Turn off the heater!"
+				if close_msg:
+					lines[4] = "Turn on the heater!"
 			else:
 				lines = [
 					"",
